@@ -8,7 +8,8 @@
 
 
 ---
-![Uploading AWS-EKS-Project.png…]()
+
+<img width="2048" height="2048" alt="AWS-EKS-Project" src="https://github.com/user-attachments/assets/3ee5eb40-4008-4936-82e5-2d690711534a" />
 
 ## 🎯 What This Project Does
 
