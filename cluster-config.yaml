@@ -1,0 +1,32 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: autoscaler-demo-cluster
+  region: us-east-1
+  version: "1.31"
+
+# Managed Node Groups (This is where magic happens!)
+managedNodeGroups:
+  - name: worker-nodes
+    instanceType: c7i-flex.large
+    minSize: 2        # Minimum nodes (always running)
+    maxSize: 10       # Maximum nodes (Cluster Autoscaler can add up to this)
+    desiredCapacity: 2  # Start with 2 nodes
+    volumeSize: 20
+      #ssh:
+      #allow: true
+    labels:
+      role: worker
+      environment: demo
+    tags:
+      k8s.io/cluster-autoscaler/autoscaler-demo-cluster: "owned"
+      k8s.io/cluster-autoscaler/enabled: "true"
+    iam:
+      withAddonPolicies:
+        autoScaler: true  # Allow Cluster Autoscaler permissions
+
+# Enable CloudWatch logging
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]

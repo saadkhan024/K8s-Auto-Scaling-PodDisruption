@@ -1,0 +1,20 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: autoscaler-demo-pdb
+spec:
+  minAvailable: 1  # Always keep at least 1 pod running
+  selector:
+    matchLabels:
+      app: autoscaler-demo
+---
+# Alternative: Use maxUnavailable instead
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: autoscaler-demo-pdb-max
+spec:
+  maxUnavailable: 50%  # Allow max 50% of pods to be down
+  selector:
+    matchLabels:
+      app: autoscaler-demo

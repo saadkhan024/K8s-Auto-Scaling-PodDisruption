@@ -1,0 +1,29 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: autoscaler-cluster
+  region: us-east-1
+  version: "1.30"
+
+availabilityZones: ["us-east-1a", "us-east-1b"]
+
+managedNodeGroups:
+  - name: worker-nodes
+    instanceType: t2.micro  # ✅ FREE TIER ELIGIBLE!
+    minSize: 2              # Start with 2 nodes
+    maxSize: 5              # Can scale up to 5
+    desiredCapacity: 2      # Start with 2
+    volumeSize: 8           # Minimum volume size
+    labels:
+      role: worker
+    tags:
+      k8s.io/cluster-autoscaler/autoscaler-cluster: "owned"
+      k8s.io/cluster-autoscaler/enabled: "true"
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["api"]  # Minimal logging to reduce costs

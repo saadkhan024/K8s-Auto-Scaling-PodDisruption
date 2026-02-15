@@ -1,0 +1,36 @@
+# PDB for Demo Application
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: autoscaler-demo-pdb
+  labels:
+    app: autoscaler-demo
+spec:
+  minAvailable: 1  # During scale-down, keep at least 1 pod
+  selector:
+    matchLabels:
+      app: autoscaler-demo
+---
+# PDB for Monitoring (Grafana) - More critical!
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: grafana-pdb
+  namespace: monitoring
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+---
+# PDB for Prometheus
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: prometheus-pdb
+  namespace: monitoring
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus

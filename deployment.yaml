@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoscaler-demo
+  labels:
+    app: autoscaler-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: autoscaler-demo
+  template:
+    metadata:
+      labels:
+        app: autoscaler-demo
+    spec:
+      containers:
+      - name: app
+        image: 239732580263.dkr.ecr.us-east-1.amazonaws.com/autoscaler-demo-app:v1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"      # Each pod requests 250m CPU
+          limits:
+            memory: "256Mi"
+            cpu: "500m"       # Max 500m CPU per pod
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoscaler-demo-service
+spec:
+  selector:
+    app: autoscaler-demo
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: LoadBalancer
